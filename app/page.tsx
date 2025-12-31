@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 
 export default function LandingPage() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error" | "duplicate"
   >("idle");
+  const [isSampleOpen, setIsSampleOpen] = useState(false);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +52,7 @@ export default function LandingPage() {
             당신의 기분을 망친 건 <br />
             당신이 아닙니다.
           </h2>
-          <p className="text-lg md:text-xl font-medium leading-relaxed max-w-xl mb-10 text-neutral-800">
+          <p className="text-lg md:text-xl font-medium leading-relaxed max-w-2xl mb-10 text-neutral-800">
             자극적인 뉴스는 뇌의 코르티솔을 분비시켜 하루를 망칩니다.{" "}
             <br className="hidden md:block" />
             우리는 '도파민'과 '공포'를 제거하고, 오직{" "}
@@ -62,25 +63,34 @@ export default function LandingPage() {
             onSubmit={handleSubscribe}
             className="flex flex-col gap-3 max-w-md"
           >
-            {/* 입력창과 버튼을 감싸는 div */}
-            <div className="flex flex-col md:flex-row gap-3">
-              <input
-                type="email"
-                placeholder="이메일 주소"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 border-2 border-black p-3 focus:outline-none focus:ring-4 focus:ring-neutral-200 transition-all placeholder:text-neutral-400 font-mono text-sm"
-                required
-              />
+            <input
+              type="email"
+              placeholder="이메일 주소"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border-2 border-black p-3 focus:outline-none focus:ring-4 focus:ring-neutral-200 transition-all placeholder:text-neutral-400 font-mono text-sm"
+              required
+            />
+
+            <div className="flex gap-3">
               <button
+                type="submit"
                 disabled={status === "loading" || status === "success"}
-                className="bg-black text-white px-6 py-3 font-bold hover:bg-neutral-800 disabled:bg-neutral-500 transition-colors border-2 border-black whitespace-nowrap"
+                className="flex-1 bg-black text-white px-6 py-3 font-bold hover:bg-neutral-800 disabled:bg-neutral-500 transition-colors border-2 border-black whitespace-nowrap"
               >
                 {status === "loading"
                   ? "처리 중..."
                   : status === "success"
                   ? "완료되었습니다"
                   : "무료로 받아보기"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsSampleOpen(true)}
+                className="px-6 py-3 font-bold bg-white text-black border-2 border-black hover:bg-neutral-100 transition-colors whitespace-nowrap"
+              >
+                샘플 보기
               </button>
             </div>
 
@@ -178,7 +188,6 @@ export default function LandingPage() {
             </p>
           </div>
           <div>
-            {/* 여기를 수정했습니다: Structural Briefing -> Editorial Synthesis */}
             <h4 className="font-bold text-lg mb-2">② Context Synthesis</h4>
             <p className="text-sm text-neutral-600">
               편향된 사설들을 통합하여, 진영 논리 뒤에 숨겨진{" "}
@@ -203,6 +212,176 @@ export default function LandingPage() {
           © 2025 NoCan News. All rights reserved.
         </p>
       </footer>
+
+      {/* Sample Modal */}
+      {isSampleOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          onClick={() => setIsSampleOpen(false)}
+        >
+          <div
+            className="bg-white w-full max-w-2xl max-h-[80vh] overflow-y-auto border-2 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] p-6 md:p-10 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsSampleOpen(false)}
+              className="absolute top-4 right-4 text-2xl font-bold hover:text-neutral-500"
+            >
+              ×
+            </button>
+
+            <div className="text-center mb-8 border-b-2 border-black pb-4">
+              <span className="text-xs font-mono bg-black text-white px-2 py-1 mb-2 inline-block">
+                SAMPLE EMAIL
+              </span>
+              <h2 className="text-2xl font-bold">NoCan News</h2>
+              <p className="text-xs text-neutral-400 mt-1">
+                세상의 소음은 끄고, 구조적 맥락만 남긴다
+              </p>
+              <p className="text-sm text-neutral-500 mt-2">2025-12-27</p>
+            </div>
+
+            <div className="space-y-8 font-sans">
+              {/* Protection Log */}
+              <div className="bg-neutral-100 p-4 border-l-4 border-green-500">
+                <p className="text-sm font-bold text-green-700">
+                  🛡️ 오늘 AI가 총 1,247건을 스캔하여 범죄 45건, 가십 89건,
+                  정치적 비방 123건을 차단했습니다.
+                </p>
+              </div>
+
+              {/* 경제 섹션 */}
+              <div>
+                <h3 className="text-lg font-bold border-b-2 border-neutral-200 pb-2 mb-4">
+                  📌 경제
+                </h3>
+                <div className="bg-neutral-50 p-4 rounded border-l-4 border-neutral-600">
+                  <p className="text-xs text-neutral-400 line-through mb-2">
+                    1500원 환율 위기, 달러는 마르는데 돈 뿌리는 정부...저성장
+                    고착화될라
+                  </p>
+                  <h4 className="text-base font-bold mb-3">
+                    원/달러 환율 1480원대 기록, 수입 물가 상승에 영향
+                  </h4>
+                  <div className="bg-white p-3 text-sm space-y-2 border border-neutral-200">
+                    <p>
+                      <span className="font-bold text-blue-600">📍 Fact:</span>{" "}
+                      원/달러 환율이 2025년 12월 1483.6원으로 8개월 만에 최고치를
+                      기록하며, 원자재를 포함한 수입 물가 지수와 소비자 물가가
+                      상승했습니다.
+                    </p>
+                    <p>
+                      <span className="font-bold text-yellow-600">
+                        📍 Context:
+                      </span>{" "}
+                      국내에 원화 공급이 많고 달러 유입이 부족한 상황이 원화
+                      약세의 주요 원인으로 지목되며, 주요국 통화 중 원화가 가장
+                      큰 폭의 약세를 보이고 있습니다.
+                    </p>
+                    <p>
+                      <span className="font-bold text-green-600">
+                        📍 Implication:
+                      </span>{" "}
+                      지속적인 고환율은 물가 상승 압력으로 작용하여 가계 부담을
+                      가중시키고 경제 성장률에 부정적인 영향을 줄 수 있습니다.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 기술 섹션 */}
+              <div>
+                <h3 className="text-lg font-bold border-b-2 border-neutral-200 pb-2 mb-4">
+                  📌 기술
+                </h3>
+                <div className="bg-neutral-50 p-4 rounded border-l-4 border-neutral-600">
+                  <p className="text-xs text-neutral-400 line-through mb-2">
+                    &quot;더 이상 빌려 쓰지 않는다&quot;...삼성, 자체 GPU 개발
+                    &apos;기술 독립 선언&apos;
+                  </p>
+                  <h4 className="text-base font-bold mb-3">
+                    삼성전자, 100% 독자 기술 모바일 GPU 개발 성공
+                  </h4>
+                  <div className="bg-white p-3 text-sm space-y-2 border border-neutral-200">
+                    <p>
+                      <span className="font-bold text-blue-600">📍 Fact:</span>{" "}
+                      삼성전자가 외부 기술 의존 없이 100% 독자 기술로 개발한
+                      모바일 GPU를 선보였으며, 이는 차기 엑시노스 제품에 탑재될
+                      예정입니다.
+                    </p>
+                    <p>
+                      <span className="font-bold text-yellow-600">
+                        📍 Context:
+                      </span>{" "}
+                      기존에는 미국 AMD의 기술을 토대로 GPU를 설계해왔으나, 이번
+                      자체 GPU 개발 성공으로 외부 지식 재산권 의존도를 낮추고
+                      막대한 수수료 지불을 절감하고자 합니다.
+                    </p>
+                    <p>
+                      <span className="font-bold text-green-600">
+                        📍 Implication:
+                      </span>{" "}
+                      자체 GPU 개발은 삼성전자의 시스템 반도체 경쟁력을 강화하고
+                      AI 시대에 기술 독립성을 확보하는 중요한 전환점이 될
+                      것입니다.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 사설 분석 */}
+              <div className="bg-gradient-to-br from-neutral-50 to-neutral-100 p-4 rounded-lg border border-neutral-200">
+                <h3 className="text-lg font-bold mb-2">⚖️ 오늘의 사설 분석</h3>
+                <p className="font-semibold text-neutral-700 mb-3">
+                  주 35시간 근로제 도입 논쟁
+                </p>
+
+                <div className="bg-white p-3 rounded mb-3 border border-neutral-200">
+                  <p className="text-sm text-neutral-700">
+                    <span className="font-bold text-red-600">🔴 핵심 쟁점:</span>{" "}
+                    노동자 삶의 질 향상 vs 기업 경쟁력 저하 우려. 양측은
+                    근로시간 단축의 시급성과 방법론에서 첨예하게 대립하고 있다.
+                  </p>
+                </div>
+
+                <div className="space-y-3 text-sm">
+                  <div className="bg-red-50 p-3 rounded text-neutral-700">
+                    <span className="font-bold text-red-700 block mb-1">
+                      보수 측 논리
+                    </span>
+                    한국의 노동생산성은 OECD 평균 대비 낮은 수준이다. 이
+                    상황에서 근로시간을 일방적으로 단축하면 기업의 경쟁력 약화로
+                    이어질 수 있으며, 결국 고용 감소라는 역효과를 초래할 수 있다.
+                  </div>
+                  <div className="bg-blue-50 p-3 rounded text-neutral-700">
+                    <span className="font-bold text-blue-700 block mb-1">
+                      진보 측 논리
+                    </span>
+                    장시간 노동은 노동자의 건강권을 침해하고 삶의 질을 저하시킨다.
+                    근로시간 단축은 노동자의 기본권 보호 차원에서 필수적이며,
+                    오히려 집중력 향상과 이직률 감소를 통해 장기적으로 생산성
+                    향상에 기여할 수 있다.
+                  </div>
+                  <div className="bg-neutral-200 p-3 rounded font-medium text-neutral-800">
+                    💡 구조적 의미: 이 논쟁은 단순한 노동시간의 문제가 아니라,
+                    한국 사회가 추구하는 성장 모델과 삶의 가치에 대한 근본적
+                    질문이다.
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center mt-8 pt-4 border-t border-neutral-200">
+                <button
+                  onClick={() => setIsSampleOpen(false)}
+                  className="bg-black text-white px-8 py-3 font-bold hover:bg-neutral-800"
+                >
+                  이런 뉴스를 받아볼래요
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
