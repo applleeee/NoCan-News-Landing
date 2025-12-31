@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 export default function LandingPage() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
+    "idle" | "loading" | "success" | "error" | "duplicate"
   >("idle");
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -17,7 +17,13 @@ export default function LandingPage() {
     try {
       const { error } = await supabase.from("subscribers").insert({ email });
 
-      if (error) throw error;
+      if (error) {
+        if (error.code === "23505") {
+          setStatus("duplicate");
+          return;
+        }
+        throw error;
+      }
       setStatus("success");
       setEmail("");
     } catch {
@@ -87,6 +93,11 @@ export default function LandingPage() {
           {status === "success" && (
             <p className="mt-4 text-sm font-mono text-green-700">
               ✓ 내일 아침 7시부터 발송됩니다.
+            </p>
+          )}
+          {status === "duplicate" && (
+            <p className="mt-4 text-sm font-mono text-neutral-600">
+              이미 등록된 이메일입니다.
             </p>
           )}
         </section>
