@@ -1,6 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const LIMIT = 300;
@@ -54,9 +55,17 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white">
       {/* 1. Header / Nav */}
       <header className="border-b-2 border-black p-4 flex justify-between items-center sticky top-0 bg-white z-50">
-        <h1 className="font-bold text-xl tracking-tighter uppercase">
-          NoCan News
-        </h1>
+        <div className="flex items-center gap-6">
+          <h1 className="font-bold text-xl tracking-tighter uppercase">
+            NoCan News
+          </h1>
+          <Link
+            href="/archive"
+            className="text-sm font-mono hover:underline underline-offset-4 hidden md:block"
+          >
+            [지난 뉴스]
+          </Link>
+        </div>
         {isFull ? (
           <span className="text-xs font-mono border border-black px-2 py-1 rounded-full bg-black text-white font-bold animate-pulse">
             CLOSED

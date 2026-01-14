@@ -69,7 +69,9 @@
 
 ## 4. Database Strategy (Supabase)
 
-### 4.1 Schema (`public.subscribers`)
+### 4.1 Schema
+
+#### `public.subscribers` (구독자)
 
 ```sql
 create table public.subscribers (
@@ -82,7 +84,31 @@ create table public.subscribers (
 );
 ```
 
-### 4.2 Security Policy (RLS)
+#### `public.newsletters` (뉴스레터)
+
+```sql
+create table public.newsletters (
+  id uuid not null default gen_random_uuid (),
+  title text not null,                      -- 뉴스레터 제목
+  content_html text not null,               -- 발송용 HTML 콘텐츠
+  content_data jsonb not null,              -- 원본 데이터 (JSON)
+  send_date date not null,                  -- 발송 날짜
+  created_at timestamp with time zone not null default now(),
+  constraint newsletters_pkey primary key (id)
+);
+```
+
+### 4.2 Functions
+
+```sql
+-- 활성 구독자 수 조회
+create function public.get_subscriber_count()
+returns integer as $$
+  select count(*)::integer from public.subscribers where is_active = true;
+$$ language sql stable;
+```
+
+### 4.3 Security Policy (RLS)
 
 - **Frontend (Anon Key):** INSERT only. (누구나 구독 신청 가능, 조회 불가)
 - **Backend (Service Role Key):** SELECT, UPDATE all. (모든 데이터 접근 가능)
