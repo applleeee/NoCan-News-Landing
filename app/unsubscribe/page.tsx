@@ -1,9 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 function UnsubscribeContent() {
   const searchParams = useSearchParams();
@@ -18,14 +18,15 @@ function UnsubscribeContent() {
         setStatus("error");
         return;
       }
-
-      const { error } = await supabase
+    
+      const { data, error } = await supabase
         .from("subscribers")
         .update({ is_active: false })
-        .eq("id", id);
-
-      if (error) {
-        console.error("Unsubscribe error:", error);
+        .eq("id", id)
+        .select();  // 업데이트된 row 반환
+    
+      if (error || !data || data.length === 0) {
+        console.error("Unsubscribe failed:", error);
         setStatus("error");
       } else {
         setStatus("success");
