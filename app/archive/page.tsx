@@ -1,8 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
-export const revalidate = 3600; // 1시간마다 ISR
-
 export default async function ArchiveList() {
   // DB에서 데이터 가져오기 (HTML 본문 제외, 가볍게)
   const { data: newsletters } = await supabase
